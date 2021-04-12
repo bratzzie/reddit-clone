@@ -1,4 +1,19 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,49 +50,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-var core_1 = require("@mikro-orm/core");
-var mikro_orm_config_1 = __importDefault(require("./mikro-orm.config"));
-var express_1 = __importDefault(require("express"));
-var apollo_server_express_1 = require("apollo-server-express");
-var type_graphql_1 = require("type-graphql");
-var hello_1 = require("./resolvers/hello");
-var post_1 = require("./resolvers/post");
-var user_1 = require("./resolvers/user");
-var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var orm, app, apolloServer, _a;
-    var _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0: return [4 /*yield*/, core_1.MikroORM.init(mikro_orm_config_1.default)];
-            case 1:
-                orm = _c.sent();
-                return [4 /*yield*/, orm.getMigrator().up()];
-            case 2:
-                _c.sent();
-                app = express_1.default();
-                _a = apollo_server_express_1.ApolloServer.bind;
-                _b = {};
-                return [4 /*yield*/, type_graphql_1.buildSchema({
-                        resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
-                        validate: false
-                    })];
-            case 3:
-                apolloServer = new (_a.apply(apollo_server_express_1.ApolloServer, [void 0, (_b.schema = _c.sent(),
-                        _b.context = function () { return ({ em: orm.em }); },
-                        _b)]))();
-                apolloServer.applyMiddleware({ app: app });
-                app.listen(5000, function () {
-                    console.log('Server is running');
-                });
+exports.Migration20210412100011 = void 0;
+var migrations_1 = require("@mikro-orm/migrations");
+var Migration20210412100011 = /** @class */ (function (_super) {
+    __extends(Migration20210412100011, _super);
+    function Migration20210412100011() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Migration20210412100011.prototype.up = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.addSql('create table "post" ("id" serial primary key, "created_at" timestamptz(0) not null, "updated_at" timestamptz(0) not null, "title" text not null);');
                 return [2 /*return*/];
-        }
-    });
-}); };
-main().catch(function (err) {
-    console.error(err);
-});
+            });
+        });
+    };
+    return Migration20210412100011;
+}(migrations_1.Migration));
+exports.Migration20210412100011 = Migration20210412100011;
