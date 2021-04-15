@@ -1,0 +1,13 @@
+//TODO:create mutations bug fix 
+
+mutation Login($options: UsernamePasswordInput!) {
+  register(options: $options) {
+    errors {
+      field
+      message
+    }
+    user {
+     ...LocalUser
+    }
+  }
+}

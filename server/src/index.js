@@ -48,8 +48,12 @@ var type_graphql_1 = require("type-graphql");
 var hello_1 = require("./resolvers/hello");
 var post_1 = require("./resolvers/post");
 var user_1 = require("./resolvers/user");
+var redis_1 = __importDefault(require("redis"));
+var express_session_1 = __importDefault(require("express-session"));
+var connect_redis_1 = __importDefault(require("connect-redis"));
+var cors_1 = __importDefault(require("cors"));
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var orm, app, apolloServer, _a;
+    var orm, app, RedisStore, redisClient, apolloServer, _a;
     var _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -60,19 +64,39 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
             case 2:
                 _c.sent();
                 app = express_1.default();
+                RedisStore = connect_redis_1.default(express_session_1.default);
+                redisClient = redis_1.default.createClient();
+                app.use(cors_1.default({ origin: "http://localhost:3000",
+                    credentials: true }));
+                app.use(express_session_1.default({
+                    name: "foo",
+                    store: new RedisStore({ client: redisClient, disableTouch: true }),
+                    cookie: {
+                        maxAge: 1000 * 60 * 60 * 24 * 365 * 2,
+                        httpOnly: true,
+                        sameSite: "lax",
+                        secure: false, // true to https
+                    },
+                    saveUninitialized: false,
+                    secret: "who",
+                    resave: false,
+                }));
                 _a = apollo_server_express_1.ApolloServer.bind;
                 _b = {};
                 return [4 /*yield*/, type_graphql_1.buildSchema({
                         resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
-                        validate: false
+                        validate: false,
                     })];
             case 3:
                 apolloServer = new (_a.apply(apollo_server_express_1.ApolloServer, [void 0, (_b.schema = _c.sent(),
-                        _b.context = function () { return ({ em: orm.em }); },
+                        _b.context = function (_a) {
+                            var req = _a.req, res = _a.res;
+                            return ({ em: orm.em, req: req, res: res });
+                        },
                         _b)]))();
-                apolloServer.applyMiddleware({ app: app });
+                apolloServer.applyMiddleware({ app: app, cors: false });
                 app.listen(5000, function () {
-                    console.log('Server is running');
+                    console.log("Server is running");
                 });
                 return [2 /*return*/];
         }

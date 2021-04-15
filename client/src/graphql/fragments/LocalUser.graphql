@@ -1,0 +1,4 @@
+fragment LocalUser on User {
+  id
+  username
+}

@@ -1,0 +1,7 @@
+//TODO:gen
+
+query Me {
+  me {
+   ...LocalUser
+     }
+}

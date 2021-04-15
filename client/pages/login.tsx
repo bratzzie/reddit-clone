@@ -5,23 +5,23 @@ import { Container } from '../components/Container'
 import InputComponent from '../components/Input'
 import { toErrorMap } from '../utils/toErrorMap'
 import {useRouter} from 'next/router'
-interface registerProps {
+interface loginProps {
     
 }
 
-const Register: React.FC<registerProps> = ({}) => {
-//TODO: const [, register] = useRegisterMutation()
+const Login: React.FC<loginProps> = ({}) => {
+//TODO: const [, login] = useLoginMutation()
 const router = useRouter()
   return (
     <Container variant="small">
       <Formik
       initialValues={{ username: "", password: "" }}
       onSubmit={async (values, {setErrors}) => {
-        const response = await register(values)
+        const response = await login({options: values})
 
-        if(response.data?.register.errors){
-          setErrors(toErrorMap(response.data.register.errors))
-        } else if(response.data?.register.user){
+        if(response.data?.login.errors){
+          setErrors(toErrorMap(response.data.login.errors))
+        } else if(response.data?.login.user){
           router.push('/')
         }
       }}
@@ -36,7 +36,7 @@ const router = useRouter()
 
         </Box>
          <Button type="submit" mt={4} maxW="100%" isLoading={isSubmitting}
-       >Sign Up</Button> 
+       >Sign In</Button> 
         </Form>
       )}
     </Formik>
@@ -44,5 +44,5 @@ const router = useRouter()
   )
 }
 
-export default Register
+export default Login
 

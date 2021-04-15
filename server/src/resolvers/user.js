@@ -97,8 +97,26 @@ var UserResponse = /** @class */ (function () {
 var UserResolver = /** @class */ (function () {
     function UserResolver() {
     }
+    UserResolver.prototype.me = function (_a) {
+        var req = _a.req, em = _a.em;
+        return __awaiter(this, void 0, void 0, function () {
+            var user;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!req.session.userId) {
+                            return [2 /*return*/, null];
+                        }
+                        return [4 /*yield*/, em.findOne(User_1.User, { id: req.session.userId })];
+                    case 1:
+                        user = _b.sent();
+                        return [2 /*return*/, user];
+                }
+            });
+        });
+    };
     UserResolver.prototype.register = function (options, _a) {
-        var em = _a.em;
+        var em = _a.em, req = _a.req;
         return __awaiter(this, void 0, void 0, function () {
             var hashedPassword, user, err_1;
             return __generator(this, function (_b) {
@@ -151,13 +169,15 @@ var UserResolver = /** @class */ (function () {
                                 }];
                         }
                         return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/, { user: user }];
+                    case 5:
+                        req.session.userId = user.id;
+                        return [2 /*return*/, { user: user }];
                 }
             });
         });
     };
     UserResolver.prototype.login = function (options, _a) {
-        var em = _a.em;
+        var em = _a.em, req = _a.req;
         return __awaiter(this, void 0, void 0, function () {
             var user, valid;
             return __generator(this, function (_b) {
@@ -188,6 +208,7 @@ var UserResolver = /** @class */ (function () {
                                     ],
                                 }];
                         }
+                        req.session.userId = user.id;
                         return [2 /*return*/, {
                                 user: user,
                             }];
@@ -195,6 +216,10 @@ var UserResolver = /** @class */ (function () {
             });
         });
     };
+    __decorate([
+        type_graphql_1.Query(function () { return User_1.User; }, { nullable: true }),
+        __param(0, type_graphql_1.Ctx())
+    ], UserResolver.prototype, "me", null);
     __decorate([
         type_graphql_1.Mutation(function () { return UserResponse; }),
         __param(0, type_graphql_1.Arg("options", function () { return UsernamePasswordInput; })),
